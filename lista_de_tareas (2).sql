@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-11-2024 a las 00:20:52
+-- Tiempo de generación: 02-11-2024 a las 00:51:18
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -28,8 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `etiquetas` (
-  `ID_etiqueta` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL
+  `id` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `color` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 -- --------------------------------------------------------
@@ -39,7 +40,7 @@ CREATE TABLE `etiquetas` (
 --
 
 CREATE TABLE `tareas` (
-  `ID_tarea` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `descripcion` varchar(255) NOT NULL,
   `fecha_Limite` date NOT NULL,
@@ -55,9 +56,9 @@ CREATE TABLE `tareas` (
 --
 
 CREATE TABLE `tareas_etiquetas` (
-  `ID_tarea_etiquetas` int(11) NOT NULL,
-  `fk_tarea` int(11) NOT NULL,
-  `fk_etiqueta` int(11) NOT NULL
+  `id` int(11) NOT NULL,
+  `tarea_id` int(11) NOT NULL,
+  `etiqueta_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 -- --------------------------------------------------------
@@ -67,9 +68,9 @@ CREATE TABLE `tareas_etiquetas` (
 --
 
 CREATE TABLE `tareas_usuarios` (
-  `ID_tarea_usuario` int(11) NOT NULL,
-  `fk_tarea` int(11) NOT NULL,
-  `fk_usuario` int(11) NOT NULL
+  `id` int(11) NOT NULL,
+  `tarea_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 -- --------------------------------------------------------
@@ -79,10 +80,9 @@ CREATE TABLE `tareas_usuarios` (
 --
 
 CREATE TABLE `usuario` (
-  `ID_usuario` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL,
+  `id` int(11) NOT NULL,
+  `nick` varchar(50) NOT NULL,
   `email` int(70) NOT NULL,
-  `teléfono` int(50) NOT NULL,
   `contraseña` int(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
@@ -94,35 +94,35 @@ CREATE TABLE `usuario` (
 -- Indices de la tabla `etiquetas`
 --
 ALTER TABLE `etiquetas`
-  ADD PRIMARY KEY (`ID_etiqueta`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `tareas`
 --
 ALTER TABLE `tareas`
-  ADD PRIMARY KEY (`ID_tarea`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `tareas_etiquetas`
 --
 ALTER TABLE `tareas_etiquetas`
-  ADD PRIMARY KEY (`ID_tarea_etiquetas`),
-  ADD KEY `fk_tarea` (`fk_tarea`),
-  ADD KEY `fk_etiqueta` (`fk_etiqueta`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_tarea` (`tarea_id`),
+  ADD KEY `fk_etiqueta` (`etiqueta_id`);
 
 --
 -- Indices de la tabla `tareas_usuarios`
 --
 ALTER TABLE `tareas_usuarios`
-  ADD PRIMARY KEY (`ID_tarea_usuario`),
-  ADD KEY `fk_tarea` (`fk_tarea`),
-  ADD KEY `fk_usuario` (`fk_usuario`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_tarea` (`tarea_id`),
+  ADD KEY `fk_usuario` (`usuario_id`);
 
 --
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`ID_usuario`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -132,31 +132,31 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `etiquetas`
 --
 ALTER TABLE `etiquetas`
-  MODIFY `ID_etiqueta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tareas`
 --
 ALTER TABLE `tareas`
-  MODIFY `ID_tarea` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tareas_etiquetas`
 --
 ALTER TABLE `tareas_etiquetas`
-  MODIFY `ID_tarea_etiquetas` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tareas_usuarios`
 --
 ALTER TABLE `tareas_usuarios`
-  MODIFY `ID_tarea_usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `ID_usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
@@ -166,15 +166,15 @@ ALTER TABLE `usuario`
 -- Filtros para la tabla `tareas_etiquetas`
 --
 ALTER TABLE `tareas_etiquetas`
-  ADD CONSTRAINT `tareas_etiquetas_ibfk_1` FOREIGN KEY (`fk_tarea`) REFERENCES `tareas` (`ID_tarea`),
-  ADD CONSTRAINT `tareas_etiquetas_ibfk_2` FOREIGN KEY (`fk_etiqueta`) REFERENCES `etiquetas` (`ID_etiqueta`);
+  ADD CONSTRAINT `tareas_etiquetas_ibfk_1` FOREIGN KEY (`tarea_id`) REFERENCES `tareas` (`id`),
+  ADD CONSTRAINT `tareas_etiquetas_ibfk_2` FOREIGN KEY (`etiqueta_id`) REFERENCES `etiquetas` (`id`);
 
 --
 -- Filtros para la tabla `tareas_usuarios`
 --
 ALTER TABLE `tareas_usuarios`
-  ADD CONSTRAINT `tareas_usuarios_ibfk_1` FOREIGN KEY (`fk_tarea`) REFERENCES `tareas` (`ID_tarea`),
-  ADD CONSTRAINT `tareas_usuarios_ibfk_2` FOREIGN KEY (`fk_usuario`) REFERENCES `usuario` (`ID_usuario`);
+  ADD CONSTRAINT `tareas_usuarios_ibfk_1` FOREIGN KEY (`tarea_id`) REFERENCES `tareas` (`id`),
+  ADD CONSTRAINT `tareas_usuarios_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
