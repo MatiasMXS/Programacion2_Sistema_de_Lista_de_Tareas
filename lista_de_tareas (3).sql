@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-11-2024 a las 00:51:18
+-- Tiempo de generación: 02-11-2024 a las 19:23:48
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -80,11 +80,18 @@ CREATE TABLE `tareas_usuarios` (
 --
 
 CREATE TABLE `usuario` (
-  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
   `nick` varchar(50) NOT NULL,
-  `email` int(70) NOT NULL,
-  `contraseña` int(50) NOT NULL
+  `contraseña` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`uid`, `nick`, `contraseña`) VALUES
+(6, 'manole', '$2a$10$lvD6dhhBnLpTURbeSmDCBOzkqkWcRcgGdfkw9tve3IP3aoIQ2MYv.'),
+(7, 'Vicky', '$2a$10$VMOTcYdk8xzJ8wVlz6D0TOF8qImknSiwcckbVKxti4rcj8I8Jkr1e');
 
 --
 -- Índices para tablas volcadas
@@ -122,7 +129,7 @@ ALTER TABLE `tareas_usuarios`
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`uid`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -156,7 +163,7 @@ ALTER TABLE `tareas_usuarios`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Restricciones para tablas volcadas
@@ -174,7 +181,7 @@ ALTER TABLE `tareas_etiquetas`
 --
 ALTER TABLE `tareas_usuarios`
   ADD CONSTRAINT `tareas_usuarios_ibfk_1` FOREIGN KEY (`tarea_id`) REFERENCES `tareas` (`id`),
-  ADD CONSTRAINT `tareas_usuarios_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`);
+  ADD CONSTRAINT `tareas_usuarios_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`uid`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
