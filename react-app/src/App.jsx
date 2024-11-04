@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthProvider";
 import Login from "./components/Login.jsx";
 //import ProtectedRoute from "./components/ProtectedRoute";
-//import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
@@ -12,11 +12,11 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route
             path="/dashboard"
-            //element={
+            element={
               //<ProtectedRoute>
-                //<Dashboard />
+                <Dashboard />
               //</ProtectedRoute>
-            //}
+            }
           />
         </Routes>
       </BrowserRouter>

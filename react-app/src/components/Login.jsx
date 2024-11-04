@@ -37,7 +37,7 @@ const Login = () => {
       } else {
         setError(data.message);
       }
-    // eslint-disable-next-line no-unused-vars
+    
     } catch (error) {
       setError("Error de servidor. Intenta más tarde.");
       console.log(error);

@@ -1,0 +1,33 @@
+
+    .titulo {
+        text-align: center;
+        flex-grow: 1; /* Permite que el h1 ocupe el espacio restante */
+        margin: 0;    /* Elimina el margen para una mejor alineación */
+        font-size: 30px;
+        color:white;
+      }
+    
+      .navbar {
+        display: flex;                /* Asegúrate de que la barra de navegación use flexbox */
+        justify-content: center;      /* Centra el contenido horizontalmente */
+      } 
+
+      .navbar-custom{
+        background-color: #9ba5f6 ;
+      }
+      
+
+      .offcanvas-custom{
+        background-color: #9ba5f6 ;
+        max-width:250px;
+      }
+
+      .offcanvas-body {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .CerrarSesion {
+        margin-top: auto;
+      }
+
