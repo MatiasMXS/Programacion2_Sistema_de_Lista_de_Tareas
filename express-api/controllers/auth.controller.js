@@ -1,6 +1,7 @@
 import pool from "../config/db.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+let idUsuario;
 
 const findByUsername = async (nick) => {
   const [row] = await pool.query("SELECT * FROM usuario WHERE nick = ?", [
@@ -49,9 +50,19 @@ export const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+    idUsuario=usuario.uid;
 
     res.json({ token: token });
   } catch (error) {
     console.log(error.message);
   }
 };
+
+export function idUsuariofun (){
+  console.log(idUsuario);
+  return idUsuario;
+  
+};
+
+
+//export idUsuario;
