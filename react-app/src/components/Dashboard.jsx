@@ -14,8 +14,7 @@ import { useReactToPrint } from "react-to-print";
 
 const Dashboard = () => {
   const { logout, token } = useContext(AuthContext);
-
- // const [clientes, setClientes] = useState([]);
+const [tareas, setTareas] = useState([]);
   //const [cliente, setCliente] = useState({});
   //const [productos, setProductos] = useState([]);
   //const [producto, setProducto] = useState({});
@@ -26,17 +25,18 @@ const Dashboard = () => {
   const contentRef = useRef(null);
   const handlePrint = useReactToPrint({ contentRef });
 
-  //const getClientes = async () => {
-  //  const response = await fetch("http://localhost:3000/clientes", {
-   //   method: "GET",
-    //  headers: {
-    //    "Content-Type": "application/json",
-     //   Authorization: `Bearer ${token}`,
-   //   },
-  //  });
-   // const data = await response.json();
-   // setClientes(data);
- // };
+  const getTareas = async () => {
+ const response = await fetch("http://localhost:3000/tareas", {
+  method: "GET",
+  headers: {
+ "Content-Type": "application/json",
+ Authorization: `Bearer ${token}`,
+},
+ });
+const data = await response.json();
+  setTareas(data);
+  
+ };
 
  // const getProductos = async () => {
  //   const response = await fetch("http://localhost:3000/productos", {
@@ -97,12 +97,12 @@ const Dashboard = () => {
     setItems(data);
     getProductos();
   };
-
+*/
   useEffect(() => {
-    getClientes();
-    getProductos();
+    getTareas();
+    
   }, []);
-
+/*
   const handleCliente = (cliente) => {
     getFacturaId(cliente.id);
     setCliente(cliente);
@@ -141,7 +141,9 @@ const Dashboard = () => {
     <br></br>
     <br></br>
 
-    <Tareas/>
+    <Tareas
+    tareas={tareas}/>
+    
     </div>
     
       
