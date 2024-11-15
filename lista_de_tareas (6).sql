@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-11-2024 a las 03:06:07
+-- Tiempo de generación: 15-11-2024 a las 18:44:23
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -34,6 +34,14 @@ CREATE TABLE `etiquetas` (
   `usuario_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
+--
+-- Volcado de datos para la tabla `etiquetas`
+--
+
+INSERT INTO `etiquetas` (`id`, `nombre`, `color`, `usuario_id`) VALUES
+(1, 'Facil', 'Azul', 7),
+(2, 'Dificil', 'Rojo', 7);
+
 -- --------------------------------------------------------
 
 --
@@ -47,27 +55,17 @@ CREATE TABLE `tareas` (
   `fecha_Limite` date NOT NULL,
   `prioridad` varchar(50) NOT NULL,
   `estado` tinyint(1) NOT NULL,
-  `materia` varchar(50) NOT NULL
+  `materia` varchar(50) NOT NULL,
+  `usuario_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
 -- Volcado de datos para la tabla `tareas`
 --
 
-INSERT INTO `tareas` (`id`, `nombre`, `descripcion`, `fecha_Limite`, `prioridad`, `estado`, `materia`) VALUES
-(1, 'TP final', 'algo', '2024-11-22', 'alta', 0, 'Programacion'),
-(3, 'a', 'aaaa', '2024-11-05', 'alta', 0, 'Programacion'),
-(5, 'a', 'ccc', '2024-11-06', 'alta', 0, 'Programacion'),
-(6, 'a', 'ppp', '2024-11-06', 'alta', 0, 'Programacion'),
-(7, 'a', 'jjjj', '2024-11-06', 'alta', 0, 'Programacion'),
-(8, 'aaaaaaaa', 'jjjj', '2024-11-06', 'alta', 0, 'Programacion'),
-(9, 'aabbbba', 'jjjj', '2024-11-06', 'alta', 0, 'Programacion'),
-(10, 'aabbbba', 'jjjj', '2024-11-06', 'alta', 0, 'Programacion'),
-(11, 'aajja', 'jjjj', '2024-11-06', 'alta', 0, 'Programacion'),
-(12, 'hh', 'jjjj', '2024-11-06', 'alta', 0, 'Programacion'),
-(13, 'ppppp', 'jjjj', '2024-11-06', 'alta', 0, 'Programacion'),
-(14, 'pppppjjj', 'jjjj', '2024-11-06', 'alta', 0, 'Programacion'),
-(15, 'pppppjjj', 'jjjjaaaaaaaaaaaaaaaa', '2024-11-06', 'alta', 0, 'Programacion');
+INSERT INTO `tareas` (`id`, `nombre`, `descripcion`, `fecha_Limite`, `prioridad`, `estado`, `materia`, `usuario_id`) VALUES
+(16, 'TP Final', 'EL ultimo TP', '2024-11-17', 'alta', 0, 'Programacion', 7),
+(17, 'Parcial APS', 'Parcial Integrador', '2024-11-19', 'alta', 0, 'Programacion', 7);
 
 -- --------------------------------------------------------
 
@@ -81,26 +79,13 @@ CREATE TABLE `tareas_etiquetas` (
   `etiqueta_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
--- --------------------------------------------------------
-
 --
--- Estructura de tabla para la tabla `tareas_usuarios`
+-- Volcado de datos para la tabla `tareas_etiquetas`
 --
 
-CREATE TABLE `tareas_usuarios` (
-  `id` int(11) NOT NULL,
-  `tarea_id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
-
---
--- Volcado de datos para la tabla `tareas_usuarios`
---
-
-INSERT INTO `tareas_usuarios` (`id`, `tarea_id`, `usuario_id`) VALUES
-(1, 12, 7),
-(2, 13, 7),
-(3, 15, 7);
+INSERT INTO `tareas_etiquetas` (`id`, `tarea_id`, `etiqueta_id`) VALUES
+(1, 16, 1),
+(2, 17, 2);
 
 -- --------------------------------------------------------
 
@@ -137,7 +122,8 @@ ALTER TABLE `etiquetas`
 -- Indices de la tabla `tareas`
 --
 ALTER TABLE `tareas`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
 
 --
 -- Indices de la tabla `tareas_etiquetas`
@@ -146,14 +132,6 @@ ALTER TABLE `tareas_etiquetas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_tarea` (`tarea_id`),
   ADD KEY `fk_etiqueta` (`etiqueta_id`);
-
---
--- Indices de la tabla `tareas_usuarios`
---
-ALTER TABLE `tareas_usuarios`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_tarea` (`tarea_id`),
-  ADD KEY `fk_usuario` (`usuario_id`);
 
 --
 -- Indices de la tabla `usuario`
@@ -169,24 +147,18 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `etiquetas`
 --
 ALTER TABLE `etiquetas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tareas`
 --
 ALTER TABLE `tareas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `tareas_etiquetas`
 --
 ALTER TABLE `tareas_etiquetas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `tareas_usuarios`
---
-ALTER TABLE `tareas_usuarios`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
@@ -206,18 +178,17 @@ ALTER TABLE `etiquetas`
   ADD CONSTRAINT `etiquetas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`uid`);
 
 --
+-- Filtros para la tabla `tareas`
+--
+ALTER TABLE `tareas`
+  ADD CONSTRAINT `tareas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`uid`);
+
+--
 -- Filtros para la tabla `tareas_etiquetas`
 --
 ALTER TABLE `tareas_etiquetas`
   ADD CONSTRAINT `tareas_etiquetas_ibfk_1` FOREIGN KEY (`tarea_id`) REFERENCES `tareas` (`id`),
   ADD CONSTRAINT `tareas_etiquetas_ibfk_2` FOREIGN KEY (`etiqueta_id`) REFERENCES `etiquetas` (`id`);
-
---
--- Filtros para la tabla `tareas_usuarios`
---
-ALTER TABLE `tareas_usuarios`
-  ADD CONSTRAINT `tareas_usuarios_ibfk_1` FOREIGN KEY (`tarea_id`) REFERENCES `tareas` (`id`),
-  ADD CONSTRAINT `tareas_usuarios_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`uid`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
