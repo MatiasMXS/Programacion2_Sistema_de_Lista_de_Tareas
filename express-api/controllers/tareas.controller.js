@@ -4,7 +4,7 @@ import { idUsuariofun } from "./auth.controller.js";
 // Obtener todas las tareas
 const findAll = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM tareas");
+    const [rows] = await pool.query("SELECT * FROM tareas WHERE usuario_id = ?", [idUsuariofun()]);
     res.status(200).send(rows);
   } catch (error) {
     res.status(500).send({ mensaje: "Error al obtener las tareas", error });
@@ -25,27 +25,30 @@ const findById = async (req, res) => {
   }
 };
 
+// Obtener una tarea por Nombre
+const findByNombre = async (req, res) => {
+  const { nombre } = req.params;
+  
+  try {
+    const [row] = await pool.query("SELECT * FROM tareas WHERE LOWER(nombre) = LOWER(?) and usuario_id = ?", [nombre, idUsuariofun()]);
+    if (row.length === 0) {
+      return res.status(404).send({ mensaje: "Tarea no encontrada" });
+    }
+    res.status(200).send(row[0]);
+  } catch (error) {
+    res.status(500).send({ mensaje: "Error al obtener la tarea", error });
+  }
+};
+
 // Crear una nueva tarea
 const create = async (req, res) => {
   const { nombre, descripcion, fecha_Limite, prioridad, estado, materia } =
     req.body;
   try {
     const [result] = await pool.query(
-      "INSERT INTO tareas (nombre, descripcion, fecha_Limite, prioridad, estado, materia) VALUES (?, ?, ?, ?, ?, ?)",
-      [nombre, descripcion, fecha_Limite, prioridad, estado, materia]
+      "INSERT INTO tareas (nombre, descripcion, fecha_Limite, prioridad, estado, materia, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [nombre, descripcion, fecha_Limite, prioridad, estado, materia, idUsuariofun()]
     );
-
-    try {
-      const idtarea = result.insertId;
-      console.log(idUsuariofun());
-      const [result2] = await pool.query(
-        "INSERT INTO tareas_usuarios (tarea_id, usuario_id) VALUES (?,?)",
-        [idtarea, idUsuariofun()]
-      );
-      console.log(idtarea, idUsuariofun());
-    } catch (error) {
-      console.log("no se pudo asociar", error );
-    }
 
     res.status(201).send({ id: result.insertId });
   } catch (error) {
@@ -153,6 +156,7 @@ const subject = async (req, res) => {
 export const tareasController = {
   findAll,
   findById,
+  findByNombre,
   create,
   update,
   remove,

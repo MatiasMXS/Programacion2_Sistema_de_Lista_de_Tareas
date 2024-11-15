@@ -6,6 +6,7 @@ const router = Router();
 
 router.get('/', auth.verifyToken, tareasController.findAll);
 router.get('/:id', auth.verifyToken, tareasController.findById);
+router.get('/nombre/:nombre', auth.verifyToken, tareasController.findByNombre);
 router.post('/', auth.verifyToken, tareasController.create);
 router.put('/:id', auth.verifyToken, tareasController.update);
 router.delete('/:id', auth.verifyToken, tareasController.remove);

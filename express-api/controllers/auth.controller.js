@@ -59,9 +59,7 @@ export const login = async (req, res) => {
 };
 
 export function idUsuariofun (){
-  console.log(idUsuario);
   return idUsuario;
-  
 };
 
 

@@ -3,6 +3,7 @@ import "dotenv/config";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
 import tareasRoutes from "./routes/tareas.routes.js";
+import etiquetasRoutes from "./routes/etiquetas.routes.js"
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,7 @@ app.use(express.json());
 //routs
 app.use("/auth", authRoutes);
 app.use("/tareas", tareasRoutes);
+app.use("/etiquetas", etiquetasRoutes)
 
 app.listen(port, ()=>{
     console.log(`Servidor corriendo en el puerto: ${port}`);
