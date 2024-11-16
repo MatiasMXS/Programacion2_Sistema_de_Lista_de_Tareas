@@ -142,7 +142,7 @@ const data = await response.json();
     <br></br>
 
     <Tareas
-    tareas={tareas}/>
+    tareas={tareas} getTareas={getTareas}/>
     
     </div>
     
