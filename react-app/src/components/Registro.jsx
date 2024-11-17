@@ -1,13 +1,11 @@
-import { useState, useContext } from "react";
+import { useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthProvider";
 import "./Login.css";
 
 const Login = () => {
   const [nick, setUsername] = useState("");
   const [contraseña, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setToken } = useContext(AuthContext);
   const navigate = useNavigate(); // Para redireccionar
 
   const handleSubmit = async (e) => {
@@ -15,7 +13,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
+      const response = await fetch("http://localhost:3000/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,14 +27,11 @@ const Login = () => {
       console.log(JSON.stringify({ nick, contraseña }))
       
       const data = await response.json();
+      console.log(data);
+      
 
-      if (response.ok && data.token) {
-        localStorage.setItem("token", data.token); // Guardar token en localStorage
-        setToken(data.token); // Guardar token en el contexto
-        navigate("/dashboard"); // Redirigir a dashboard
-      } else {
-        setError(data.message);
-      }
+        navigate("/");
+      
     
     } catch (error) {
       setError("Error de servidor. Intenta más tarde.");
@@ -57,7 +52,7 @@ const Login = () => {
               <div className="card border border-light-subtle rounded-3 shadow-sm">
                 <div className="card-body p-3 p-md-4 p-xl-5">
                   <h2 className="fs-5 fw-light text-center text-normal mb-4">
-                    Inicio de Sesión
+                    Registro
                   </h2>
                   <form onSubmit={handleSubmit}>
                     <div className="row gy-2 overflow-hidden">
@@ -98,18 +93,12 @@ const Login = () => {
                       <div className="col-12">
                         <div className="d-grid my-3">
                           <button className="boton" type="submit">
-                            Ingresar
+                            Registrarse
                           </button>
                         </div>
                       </div>
                     </div>
 
-                    <div className="registrarse">
-                      Realizar el <a href="#"onClick={(e) => {
-                          e.preventDefault();
-                          navigate("/registro");
-                        }}>registro</a>
-                    </div>
                   </form>
                   {error && <div className="alert alert-danger">{error}</div>}
                 </div>

@@ -1,52 +1,56 @@
+.titulo {
+  text-align: center;
+  flex-grow: 1; /* Permite que el h1 ocupe el espacio restante */
+  margin: 0; /* Elimina el margen para una mejor alineación */
+  font-size: 30px;
+  color: white;
+}
 
-    .titulo {
-        text-align: center;
-        flex-grow: 1; /* Permite que el h1 ocupe el espacio restante */
-        margin: 0;    /* Elimina el margen para una mejor alineación */
-        font-size: 30px;
-        color:white;
-      }
-    
-      .navbar {
-        display: flex;                /* Asegúrate de que la barra de navegación use flexbox */
-        justify-content: center;      /* Centra el contenido horizontalmente */
-      } 
+.navbar {
+  display: flex; /* Asegúrate de que la barra de navegación use flexbox */
+  justify-content: center; /* Centra el contenido horizontalmente */
+}
 
-      .navbar-custom{
-        background-color: #9ba5f6 ;
-      }
-      
+.navbar-custom {
+  background-color: #9ba5f6;
+}
 
-      .offcanvas-custom{
-        background-color: #9ba5f6 ;
-        max-width:250px;
-      }
+.offcanvas-custom {
+  background-color: #9ba5f6;
+  max-width: 250px;
+}
 
-      .offcanvas-body {
-        display: flex;
-        flex-direction: column;
-      }
-      
-      .CerrarSesion {
-        margin-top: auto;
-      }
+.offcanvas-body {
+  display: flex;
+  flex-direction: column;
+}
 
-      .btn-container{
-        display: flex;                  /* Flexbox para alinear los botones en línea */
-        gap: 10px;  
-      }
+.CerrarSesion {
+  margin-top: auto;
+}
 
-      .customize-2 {
-    position: absolute;
-    right: 12px;
+.btn-container {
+  display: flex; /* Flexbox para alinear los botones en línea */
+  gap: 10px;
+}
 
 
-         }
+.dropdown-item {
+  display: flex;
+  align-items: center; /* Alinea verticalmente el contenido */
+  justify-content: space-between; /* Separa el texto del contenedor de botones */
+}
 
-      .customize-1 {
-          position: absolute;
-          right: 48px;
-         
-               }
+.btn-container {
+  display: flex;
+  align-items: center; /* Alinea verticalmente el botón y el input */
+  gap: 8px; /* Espaciado entre el input de color y el botón */
+}
 
-      
+.me-2 {
+  margin-right: 8px; /* Espaciado adicional para personalización */
+}
+
+.ms-auto {
+  margin-left: auto; /* Empuja el contenedor al extremo derecho */
+}

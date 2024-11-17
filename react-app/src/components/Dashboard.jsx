@@ -18,6 +18,7 @@ const Dashboard = () => {
   const { token } = useContext(AuthContext);
 const [tareas, setTareas] = useState([]);
 const [etiquetas, setEtiquetas] = useState([]);
+const [etiquetasUsadas, setEtiquetasUsadas] = useState([]);
   //const [cliente, setCliente] = useState({});
   //const [productos, setProductos] = useState([]);
   //const [producto, setProducto] = useState({});
@@ -54,6 +55,21 @@ const data = await response.json();
    
   };
 
+  const getEtiquetasUsadas = async () => {
+    const response = await fetch("http://localhost:3000/etiquetas/ocupada/tarea", {
+     method: "GET",
+     headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+   },
+    });
+   const data = await response.json();
+     setEtiquetasUsadas(data);
+     console.log(etiquetasUsadas);
+     
+     
+    };
+  
 
 
  // const getProductos = async () => {
@@ -119,6 +135,7 @@ const data = await response.json();
   useEffect(() => {
     getTareas();
     getEtiquetas();
+      getEtiquetasUsadas()
     
   }, []);
 /*
@@ -164,7 +181,12 @@ const data = await response.json();
     <br></br>
 
     <Tareas
-    tareas={tareas} getTareas={getTareas}/>
+    tareas={tareas} 
+    getTareas={getTareas}
+      etiquetasUsadas={etiquetasUsadas}
+      getEtiquetasUsadas={getEtiquetasUsadas}
+      etiquetas={etiquetas}
+    />
     
     </div>
     

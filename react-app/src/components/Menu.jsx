@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import "./Menu.css";
 import { AuthContext } from "../context/AuthProvider";
@@ -45,8 +46,46 @@ const Menu = ({ etiquetas , getEtiquetas }) => {
     }
   };
 
+  const deleteEtiqueta = async (id) => {
+    if (!window.confirm("¿Estás seguro de eliminar esta etiqueta?")) return;
 
+    try {
+      const response = await fetch(`http://localhost:3000/etiquetas/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      if (response.ok) {
+        getEtiquetas();
+        
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateColor = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/etiquetas/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ color }),
+      });
+      if (response.ok) {
+        console.log("Color actualizado con éxito");
+        getEtiquetas();
+        
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -55,11 +94,16 @@ const Menu = ({ etiquetas , getEtiquetas }) => {
 
 
   const handlecrear=e=>{
-
     console.log(e.target.value);
     setNombre(e.target.value);
-  
    }
+
+   const handleColor = (e, id) => {
+    console.log(e.target.value);
+    setColor(e.target.value)
+    updateColor(id)
+   }
+
   return (
     <section>
       <div>
@@ -205,21 +249,25 @@ const Menu = ({ etiquetas , getEtiquetas }) => {
                       
                       <li key={row.id}>
                         
-                        <a className="dropdown-item" href="#">
+                        <a className="dropdown-item d-flex align-items-center" href="#">
                           {row.nombre}
 
-                          
-                            <button className="customize-1">
-                              <i className="fa-solid fa-pencil"></i>
-                            </button>
+                          <div className="btn-container ms-auto">
+                          <input 
+                          type="color" 
+                          className="form-control form-control-color customize-1" 
+                          value = {row.color}
+                          id="exampleColorInput" onChange={(e) =>handleColor(e,row.id)} />
+                        
                             <button
                               className="btn btn-danger btn-sm customize-2"
                               type="button"
                               title="Borrar"
+                              onClick={() => deleteEtiqueta(row.id)}
                             >
                               <i className="fa-solid fa-trash"></i>
                             </button>
-                          
+                            </div>
                         </a>
                        
                       </li>

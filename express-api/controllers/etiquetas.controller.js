@@ -42,6 +42,15 @@ const findByNombre = async (req, res) => {
     }
   };
 
+  const findByTarea = async (req, res) => {
+      try {
+        const [rows] = await pool.query("SELECT * FROM etiquetas INNER JOIN tareas_etiquetas on etiquetas.id=etiqueta_id WHERE usuario_id=?", [idUsuariofun()]);
+        res.status(200).send(rows);
+    } catch (error) {
+        res.status(500).send({ mensaje: 'Error al obtener las etiquetas', error });
+    }
+  };
+
 // Crear una nueva etiquetas
 const create = async (req, res) => {
     const { nombre, color } = req.body;
@@ -56,14 +65,14 @@ const create = async (req, res) => {
     }
 };
 
-// Actualizar una etiquetas por ID
+// Actualizar una etiquetas por ID SOLO COLOR
 const update = async (req, res) => {
     const { id } = req.params;
-    const { nombre, color } = req.body;
+    const { color } = req.body;
     try {
         const [result] = await pool.query(
-            "UPDATE etiquetas SET nombre = ?, color = ? WHERE  id = ?",
-            [nombre, color, id]
+            "UPDATE etiquetas SET color = ? WHERE  id = ?",
+            [ color, id]
           );
         if (result.affectedRows === 1) {
             res.json({ message: "Registro actualizado" });
@@ -124,6 +133,7 @@ export const etiquetasController = {
     findAll,
     findById,
     findByNombre,
+    findByTarea,
     create,
     update,
     remove,

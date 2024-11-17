@@ -7,6 +7,7 @@ const router = Router();
 router.get('/', auth.verifyToken, etiquetasController.findAll);
 router.get('/:id', auth.verifyToken, etiquetasController.findById);
 router.get('/nombre/:nombre', auth.verifyToken, etiquetasController.findByNombre);
+router.get('/ocupada/tarea', auth.verifyToken, etiquetasController.findByTarea);
 router.post('/', auth.verifyToken, etiquetasController.create);
 router.put('/:id', auth.verifyToken, etiquetasController.update);
 router.delete('/:id', auth.verifyToken, etiquetasController.remove);
