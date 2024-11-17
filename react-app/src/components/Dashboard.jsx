@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthProvider";
+
 
 import Menu from "./Menu";
 import Tareas from "./Tareas";
@@ -13,8 +15,9 @@ import Tareas from "./Tareas";
 import { useReactToPrint } from "react-to-print";
 
 const Dashboard = () => {
-  const { logout, token } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
 const [tareas, setTareas] = useState([]);
+const [etiquetas, setEtiquetas] = useState([]);
   //const [cliente, setCliente] = useState({});
   //const [productos, setProductos] = useState([]);
   //const [producto, setProducto] = useState({});
@@ -37,6 +40,21 @@ const data = await response.json();
   setTareas(data);
   
  };
+
+ const getEtiquetas = async () => {
+  const response = await fetch("http://localhost:3000/etiquetas", {
+   method: "GET",
+   headers: {
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`,
+ },
+  });
+ const data = await response.json();
+   setEtiquetas(data);
+   
+  };
+
+
 
  // const getProductos = async () => {
  //   const response = await fetch("http://localhost:3000/productos", {
@@ -100,6 +118,7 @@ const data = await response.json();
 */
   useEffect(() => {
     getTareas();
+    getEtiquetas();
     
   }, []);
 /*
@@ -136,7 +155,10 @@ const data = await response.json();
 */
   return (
     <div>
-    <Menu/>
+    <Menu
+    etiquetas={etiquetas}
+    getEtiquetas={getEtiquetas}
+    />
     
     <br></br>
     <br></br>

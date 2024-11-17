@@ -1,14 +1,14 @@
-.form-check-input{
+
+.checkbox-1{
+  text-decoration: line-through;
+}
+
+
+.form-check-input {
     width: 18px; /* Ajusta el tamaño a tu preferencia */
     height: 18px;
     margin: 0 20px; 
 }
 
-.btn-container {
-    display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    height: 100%; /* Asegúrate de que el contenedor ocupe todo el espacio */
-    margin-bottom: 10px;
-    gap: 10px;
-  }
+
+

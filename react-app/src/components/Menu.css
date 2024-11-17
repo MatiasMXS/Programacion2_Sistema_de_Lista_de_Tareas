@@ -31,3 +31,22 @@
         margin-top: auto;
       }
 
+      .btn-container{
+        display: flex;                  /* Flexbox para alinear los botones en línea */
+        gap: 10px;  
+      }
+
+      .customize-2 {
+    position: absolute;
+    right: 12px;
+
+
+         }
+
+      .customize-1 {
+          position: absolute;
+          right: 48px;
+         
+               }
+
+      

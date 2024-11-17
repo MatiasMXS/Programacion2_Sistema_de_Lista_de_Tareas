@@ -4,8 +4,9 @@ import "./Tareas.css";
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 
-// eslint-disable-next-line react/prop-types
+ 
 const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
+  const [buscartareas, setbuscarTareas] = useState([]);
   const { token } = useContext(AuthContext);
   const [id, setId] = useState("");
   const [nombre, setNombre] = useState("");
@@ -16,6 +17,8 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
   const [materia, setMateria] = useState("");
   const [usuario_id, setUsuario_id] = useState("");
   const [title, setTitle] = useState("");
+  const [busqueda, setBusqueda] = useState("");
+
 
   const openModal = (
     opcion,
@@ -24,14 +27,12 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
     descripcion,
     fecha_Limite,
     prioridad,
-    estado,
     materia,
-    usuario_id
   ) => {
     if (opcion === 1) {
       setTitle("Añadir nuevo cliente");
       setId("");
-      setNombre("");
+      setNombre(busqueda);
       setDescripcion("");
       setfecha_Limite("");
       setPrioridad("");
@@ -43,13 +44,39 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
       setDescripcion(descripcion);
       setfecha_Limite(fecha_Limite);
       setPrioridad(prioridad);
-      setEstado(estado);
       setMateria(materia);
     }
     setTimeout(() => {
       document.getElementById("id").focus();
     }, 500);
   };
+
+ const ChequearTarea = async (id, estadoActual) => {
+  try {
+    const response = await fetch(`http://localhost:3000/tareas/check/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        id,
+        estadoActual
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+
+    if (response.ok) {
+      document.getElementById("btnCerrar").click();
+      getTareas();
+      
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
   const sendDataTarea = async () => {
     // falta validar los datos (que no este vacio o solo espacios en blanco, etc.)
@@ -71,7 +98,6 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
           descripcion,
           fecha_Limite,
           prioridad,
-          estado,
           materia,
           usuario_id,
         }),
@@ -89,16 +115,65 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
     }
   };
 
+  const deleteTarea = async (id) => {
+    if (!window.confirm("¿Estás seguro de eliminar cliente?")) return;
+
+    try {
+      const response = await fetch(`http://localhost:3000/tareas/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        getTareas();
+        
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleBusqueda=e=>{
+
+   setBusqueda(e.target.value);
+   console.log(e.target.value);
+   buscar(e.target.value);
+  }
+  
+const buscar = async (e) => {
+  try {
+    const response = await fetch(`http://localhost:3000/tareas/nombre/${e}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) throw new Error("Error al buscar tareas");
+      const data = await response.json();
+      setbuscarTareas(data);
+    } catch (error) {
+      console.error(error);
+      setbuscarTareas([]); // Restablece a un arreglo vacío si hay errores
+    }
+  };
+
+ 
   return (
     <div className="container mt-4">
       <h3>Lista de Tareas</h3>
-
+  
       <div className="input-group">
         <input
           type="text"
-          className="form-control"
+          className="form-control inputBuscar"
+          value={busqueda}
           placeholder="Busca o crea una tarea"
           aria-label="Busca o crea una tarea"
+          onChange={handleBusqueda}
         />
         <button className="btn btn-outline-success" type="submit">
           🔍︎
@@ -113,7 +188,7 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
           +
         </button>
       </div>
-
+  
       <div className="modal fade" id="tareasModal">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -164,8 +239,6 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
                   onChange={(e) => setPrioridad(e.target.value)}
                 />
               </div>
-
-
               <div className="input-group mb-3">
                 <input
                   type="text"
@@ -175,7 +248,6 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
                   onChange={(e) => setMateria(e.target.value)}
                 />
               </div>
-
             </div>
             <div className="modal-footer">
               <button
@@ -197,31 +269,32 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
           </div>
         </div>
       </div>
-
-      <br></br>
-
+  
+      <br />
+  
       <div className="accordion accordion-flush" id="accordionFlushExample">
-        
-          {tareas.map((row) => (
+        {(busqueda ? buscartareas : tareas).length > 0 ? (
+          (busqueda ? buscartareas : tareas).map((row) => (
             <div className="accordion-item" id="" key={row.id}>
               <h2
-                className="accordion-header d-flex align-items-center justify-content-between"
+                className={`accordion-header d-flex align-items-center justify-content-between checkbox-${row.estado}`}
                 id={`flush-heading-${row.id}`}
               >
                 <input
                   className="form-check-input"
                   type="checkbox"
                   value=""
+                  checked={row.estado === 1}
+                  onChange={() => ChequearTarea(row.id, row.estado)}
                   id={`checkbox-${row.id}`}
                 />
-
                 <button
-                  className="accordion-button collapsed flex-grow-1 "
+                  className="accordion-button collapsed flex-grow-1"
                   type="button"
                   data-bs-toggle="collapse"
                   data-bs-target={`#flush-collapse-${row.id}`}
-          aria-expanded="false"
-          aria-controls={`flush-collapse-${row.id}`}
+                  aria-expanded="false"
+                  aria-controls={`flush-collapse-${row.id}`}
                 >
                   {row.nombre}
                 </button>
@@ -238,36 +311,34 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
                   <br />
                   Prioridad: {row.prioridad}
                   <br />
-                  Estado: {row.estado}
-                  <br />
                   Materia: {row.materia}
                   <br />
                   <div className="btn-container">
-                  <button
-                    className="btnInsideTareas btn btn-primary btn-sm"
-                    type="button"
-                    onClick={() =>
-                      openModal(
-                        2,
-                        row.id,
-                        row.nombre,
-                        row.descripcion,
-                        row.fecha_Limite,
-                        row.prioridad,
-                        row.estado,
-                        row.materia
-                      )
-                    }
-                    title="Editar"
-                    data-bs-toggle="modal"
-                    data-bs-target="#tareasModal"
-                  >
-                    <i className="fa-solid fa-pencil"></i>
-                  </button>
+                    <button
+                      className="btnInsideTareas btn btn-primary btn-sm"
+                      type="button"
+                      onClick={() =>
+                        openModal(
+                          2,
+                          row.id,
+                          row.nombre,
+                          row.descripcion,
+                          row.fecha_Limite,
+                          row.prioridad,
+                          row.materia
+                        )
+                      }
+                      title="Editar"
+                      data-bs-toggle="modal"
+                      data-bs-target="#tareasModal"
+                    >
+                      <i className="fa-solid fa-pencil"></i>
+                    </button>
                     <button
                       className="btn btn-danger btn-sm"
                       type="button"
                       title="Borrar"
+                      onClick={() => deleteTarea(row.id)}
                     >
                       <i className="fa-solid fa-trash"></i>
                     </button>
@@ -275,11 +346,12 @@ const Tareas = ({ tareas  /*, cliente*/, getTareas}) => {
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          ))
+        ) : (
+          <p>No se encontraron tareas</p>
+        )}
       </div>
-    
+    </div>
   );
-};
-
+}
 export default Tareas;

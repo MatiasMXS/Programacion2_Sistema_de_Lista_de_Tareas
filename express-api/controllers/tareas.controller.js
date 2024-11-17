@@ -30,11 +30,12 @@ const findByNombre = async (req, res) => {
   const { nombre } = req.params;
   
   try {
-    const [row] = await pool.query("SELECT * FROM tareas WHERE LOWER(nombre) = LOWER(?) and usuario_id = ?", [nombre, idUsuariofun()]);
-    if (row.length === 0) {
-      return res.status(404).send({ mensaje: "Tarea no encontrada" });
+    const [rows] = await pool.query("SELECT * FROM tareas WHERE nombre LIKE '"+ nombre + "%' and usuario_id = ?", [idUsuariofun()]);
+    if (rows.length > 0) {
+      res.json(rows);
+    } else {
+      res.json({ message: "Tareas no encontradas" });
     }
-    res.status(200).send(row[0]);
   } catch (error) {
     res.status(500).send({ mensaje: "Error al obtener la tarea", error });
   }
@@ -42,12 +43,12 @@ const findByNombre = async (req, res) => {
 
 // Crear una nueva tarea
 const create = async (req, res) => {
-  const { nombre, descripcion, fecha_Limite, prioridad, estado, materia } =
+  const { nombre, descripcion, fecha_Limite, prioridad, materia } =
     req.body;
   try {
     const [result] = await pool.query(
-      "INSERT INTO tareas (nombre, descripcion, fecha_Limite, prioridad, estado, materia, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [nombre, descripcion, fecha_Limite, prioridad, estado, materia, idUsuariofun()]
+      "INSERT INTO tareas (nombre, descripcion, fecha_Limite, prioridad, materia, usuario_id) VALUES (?, ?, ?, ?, ?, ?)",
+      [nombre, descripcion, fecha_Limite, prioridad, materia, idUsuariofun()]
     );
 
     res.status(201).send({ id: result.insertId });
@@ -59,13 +60,30 @@ const create = async (req, res) => {
 // Actualizar una tarea por ID
 const update = async (req, res) => {
   const { id } = req.params;
-  const { nombre, descripcion, fecha_Limite, prioridad, estado, materia } =
+  const { nombre, descripcion, fecha_Limite, prioridad, materia } =
     req.body;
   try {
     const [result] = await pool.query(
-      "UPDATE tareas SET nombre = ?, descripcion = ?, fecha_Limite = ?, prioridad = ?, estado = ?, materia = ? WHERE id = ?",
-      [nombre, descripcion, fecha_Limite, prioridad, estado, materia, id]
+      "UPDATE tareas SET nombre = ?, descripcion = ?, fecha_Limite = ?, prioridad = ?, materia = ? WHERE id = ?",
+      [nombre, descripcion, fecha_Limite, prioridad, materia, id]
     );
+    if (result.affectedRows === 1) {
+      res.json({ message: "Registro actualizado" });
+    } else {
+      res.json({ message: "Registro inexistente" });
+    }
+  } catch (error) {
+    res.status(400).send({mensaje: "Error al actualizar la tarea",});
+  }
+};
+
+
+// Actualizar Check una tarea por ID
+const checkUpdate = async (req, res) => {
+  const { id } = req.params;
+    req.body;
+  try {
+    const [result] = await pool.query("UPDATE tareas SET estado = CASE WHEN estado = 1 THEN 0 ELSE 1 END WHERE id = ?", [id]);
     if (result.affectedRows === 1) {
       res.json({ message: "Registro actualizado" });
     } else {
@@ -79,6 +97,14 @@ const update = async (req, res) => {
 // Eliminar una tarea por ID
 const remove = async (req, res) => {
   const { id } = req.params;
+
+    const [rows] = await pool.query(
+      "SELECT * FROM tareas_etiquetas WHERE tarea_id = ?",
+      [id]
+    );
+    if (rows.affectedRows != 0) {
+    await pool.query("DELETE FROM tareas_etiquetas WHERE tarea_id = ?", [id]);
+};
   try {
     const [result] = await pool.query("DELETE FROM tareas WHERE id = ?", [id]);
     if (result.affectedRows != 1) {
@@ -153,12 +179,14 @@ const subject = async (req, res) => {
   }
 };
 
+
 export const tareasController = {
   findAll,
   findById,
   findByNombre,
   create,
   update,
+  checkUpdate,
   remove,
   priority,
   end,
