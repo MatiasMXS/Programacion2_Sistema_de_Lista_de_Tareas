@@ -9,6 +9,8 @@
 .rounded-circle{
     width: 16px;
     height: 16px;
+    margin-right: 7px;
+margin-top: 4px;
 }
 
 
@@ -16,3 +18,28 @@
     text-decoration: line-through;
   }
   
+
+  .etiqueta-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px; /* Espaciado entre filas */
+  }
+  
+  .etiqueta-item .form-check-input {
+    margin-right: 10px; 
+  }
+  
+  .etiqueta-item .form-check-label {
+    flex-grow: 1; 
+    text-align: left; 
+  }
+  
+  .etiqueta-item .rounded-circle {
+    margin-right: 10px; 
+  }
+  
+.form-control.dropdown-toggle {
+    text-align: left; 
+    padding-left: 12px; 
+  }

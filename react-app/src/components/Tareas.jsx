@@ -12,6 +12,7 @@ const Tareas = ({
   etiquetas,
 }) => {
   const [buscartareas, setbuscarTareas] = useState([]);
+  const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState([]);
   const { token } = useContext(AuthContext);
   const [id, setId] = useState("");
   const [nombre, setNombre] = useState("");
@@ -22,6 +23,7 @@ const Tareas = ({
   const [usuario_id, setUsuario_id] = useState("");
   const [title, setTitle] = useState("");
   const [busqueda, setBusqueda] = useState("");
+  
 
   const openModal = (
     opcion,
@@ -30,7 +32,8 @@ const Tareas = ({
     descripcion,
     fecha_Limite,
     prioridad,
-    materia
+    materia,
+    etiquetasSeleccionadas
   ) => {
     if (opcion === 1) {
       setTitle("Añadir nueva tarea");
@@ -40,6 +43,7 @@ const Tareas = ({
       setfecha_Limite("");
       setPrioridad("");
       setMateria("");
+      setEtiquetasSeleccionadas([]);
     } else if (opcion === 2) {
       setTitle("Editar tarea");
       setId(id);
@@ -48,6 +52,7 @@ const Tareas = ({
       setfecha_Limite(fecha_Limite);
       setPrioridad(prioridad);
       setMateria(materia);
+      setEtiquetasSeleccionadas([getEtiquetasUsadas]);
     }
     setTimeout(() => {
       document.getElementById("id").focus();
@@ -160,9 +165,55 @@ const Tareas = ({
     }
   };
 
+  const asociarEtiqueta = async (tarea_id,etiqueta_id) => {
+    try {
+      const response = await fetch("http://localhost:3000/etiquetas/C_Tarea", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          tarea_id,
+          etiqueta_id,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+
+      if (response.ok) {
+        alert("Etiqueta asociada con éxito");
+        document.getElementById("btnCerrar").click();
+        getEtiquetasUsadas();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleNuevaEtiqueta = (etiquetaId,id) => {
+    console.log("hola", etiquetaId,id);
+    const etiquetasTarea = obtenerEtiquetasTarea(id);
+
+    // Revisamos si la etiqueta ya está asociada
+    const yaAsociada = etiquetasTarea.some((etiqueta) => etiqueta.id === etiquetaId);
+  
+    if (yaAsociada) {
+      console.log("Etiqueta ya está asociada:", etiquetaId);
+    } else {
+      console.log("Asociando etiqueta:", etiquetaId, "a tarea:", id);
+      asociarEtiqueta(id, etiquetaId);
+      
+    }
+  };
+
   const obtenerEtiquetasTarea = (tareaId) => {
+    console.log(etiquetasUsadas.filter((etiqueta) => etiqueta.tarea_id === tareaId));
     return etiquetasUsadas.filter((etiqueta) => etiqueta.tarea_id === tareaId);
   };
+
+
+
   return (
     <div className="container mt-4">
       <h3>Lista de Tareas</h3>
@@ -261,29 +312,26 @@ const Tareas = ({
                 </button>
                 <ul className="dropdown-menu">
                   {etiquetas.map((row) => (
-                    <div key={row.id}>
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                        id="flexCheckDefault"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="flexCheckDefault"
-                      >
+                    <li key={row.id} className="etiqueta-item">
+                      <label className="form-check-label">
+                        <input
+                          type="checkbox"
+                          className="form-check-input me-2"
+                          checked={obtenerEtiquetasTarea(id).some(etiqueta => etiqueta.id === row.id)}
+                          onChange={() => handleNuevaEtiqueta(row.id,id)}
+                        />
                         {row.nombre}
-                        
                       </label>
                       <span
-                        className="rounded-circle"
+                        className="rounded-circle float-end"
                         style={{             backgroundColor: row.color,
                           width: '16px',
                           height: '16px',
+                          display: 'inline-block',
                          }}
                         
-                      >   -...</span>
-                    </div>
+                      > </span>
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -339,7 +387,7 @@ const Tareas = ({
                   {row.nombre}
 
                   {obtenerEtiquetasTarea(row.id).length > 0 && (
-                    <div className="d-flex gap-2 ms-4">
+                    <div className="d-flex gap-2 ms-4 ">
                       {obtenerEtiquetasTarea(row.id).map((etiqueta) => (
                         <span
                           key={etiqueta.id}
