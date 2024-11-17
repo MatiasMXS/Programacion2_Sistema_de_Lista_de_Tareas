@@ -43,3 +43,7 @@ margin-top: 4px;
     text-align: left; 
     padding-left: 12px; 
   }
+
+  .accordion-body{
+    margin-left: 35px;
+  }

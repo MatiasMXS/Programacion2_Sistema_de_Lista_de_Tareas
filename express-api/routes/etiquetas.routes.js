@@ -12,7 +12,7 @@ router.post('/', auth.verifyToken, etiquetasController.create);
 router.put('/:id', auth.verifyToken, etiquetasController.update);
 router.delete('/:id', auth.verifyToken, etiquetasController.remove);
 router.post('/C_Tarea', auth.verifyToken, etiquetasController.Create_tarea_etiqueta);
-router.delete('/D_Tarea/:id', auth.verifyToken, etiquetasController.Delete_tarea_etiqueta);
+router.delete('/D_Tarea/a', auth.verifyToken, etiquetasController.Delete_tarea_etiqueta);
 
 
 

@@ -6,6 +6,7 @@ export const AuthContext = createContext();
 // eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
+  const [usuario_id, setUsuario_id] = useState(null); 
   const [loading, setLoading] = useState(true);
 
   const isTokenExpired = (token) => {
@@ -15,6 +16,17 @@ export const AuthProvider = ({ children }) => {
     return expiry < now; // Retorna true si el token ha expirado
   };
 
+  const extractUsuarioIdFromToken = (token) => {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica el payload del JWT
+      return payload.uid || null; // Asegúrate de usar el nombre correcto del campo en tu token
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
+      return null;
+    }
+  };
+
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -23,9 +35,11 @@ export const AuthProvider = ({ children }) => {
         setToken(null);
       } else {
         setToken(storedToken);
+        setUsuario_id(extractUsuarioIdFromToken(storedToken));
       }
     }
     setLoading(false);
+    
   }, []);
 
   const logout = () => {
@@ -34,7 +48,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, setToken, logout, loading }}>
+    <AuthContext.Provider value={{ token, setToken,usuario_id, logout, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

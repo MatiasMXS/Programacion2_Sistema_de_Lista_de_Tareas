@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthProvider";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Menu = ({ etiquetas , getEtiquetas }) => {
+const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTareasEtiquetas }) => {
   const { token } = useContext(AuthContext);
   const [id, setId] = useState("");
   const [nombre, setNombre] = useState("");
@@ -92,6 +92,53 @@ const Menu = ({ etiquetas , getEtiquetas }) => {
     navigate("/");
   };
 
+  const buscarFecha = async (dia) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/tareas/proximas-vencer/${dia}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Error al buscar tareas");
+      const data = await response.json();
+      setTareasFecha(data);
+      // setTareasFecha
+      // Pendientes =buscartareasFecha;
+    } catch (error) {
+      console.error(error);
+      setTareasFecha([]); // Restablece a un arreglo vacío si hay errores
+    }
+  };
+
+  const buscarTareaEtiqueta = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/tareas/etiqueta/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Error al buscar tareas");
+      const data = await response.json();
+      seTareasEtiquetas(data);
+      // setTareasFecha
+      // Pendientes =buscartareasFecha;
+    } catch (error) {
+      console.error(error);
+      seTareasEtiquetas([]); // Restablece a un arreglo vacío si hay errores
+    }
+  };
 
   const handlecrear=e=>{
     console.log(e.target.value);
@@ -145,14 +192,11 @@ const Menu = ({ etiquetas , getEtiquetas }) => {
             <div className="offcanvas-body">
               <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li className="nav-item">
-                  <a className="nav-link active" aria-current="page" href="#">
-                    Inicio
-                  </a>
+                <button className="nav-link" onClick={() => cambiarPagina("tareas")}>Inicio</button>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Perfil
-                  </a>
+                  <button className="nav-link" onClick={() => cambiarPagina("perfil")}>Perfil</button>
+                  
                 </li>
                 <li className="nav-item">
                   <a className="nav-link" href="#">
@@ -197,19 +241,37 @@ const Menu = ({ etiquetas , getEtiquetas }) => {
 
                   <ul className="dropdown-menu">
                     <li>
-                      <a className="dropdown-item" href="#">
+                    <button
+                        className="dropdown-item"
+                        onClick={() => {
+                          cambiarPagina("tareasPendientes");
+                          buscarFecha(1);
+                        }}
+                      >
                         Hoy
-                      </a>
+                      </button>
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                    <button
+                        className="dropdown-item"
+                        onClick={() => {
+                          cambiarPagina("tareasPendientes");
+                          buscarFecha(2);
+                        }}
+                      >
                         Mañana
-                      </a>
+                      </button>
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                    <button
+                        className="dropdown-item"
+                        onClick={() => {
+                          cambiarPagina("tareasPendientes");
+                          buscarFecha(7);
+                        }}
+                      >
                         Próxima Semana
-                      </a>
+                      </button>
                     </li>
                   </ul>
                 </li>
@@ -249,7 +311,13 @@ const Menu = ({ etiquetas , getEtiquetas }) => {
                       
                       <li key={row.id}>
                         
-                        <a className="dropdown-item d-flex align-items-center" href="#">
+                        <button
+                          className="dropdown-item d-flex align-items-center"
+                          onClick={() => {
+                            cambiarPagina("tareasEtiquetas");
+                            buscarTareaEtiqueta(row.id);
+                          }}
+                        >
                           {row.nombre}
 
                           <div className="btn-container ms-auto">
@@ -268,7 +336,7 @@ const Menu = ({ etiquetas , getEtiquetas }) => {
                               <i className="fa-solid fa-trash"></i>
                             </button>
                             </div>
-                        </a>
+                        </button>
                        
                       </li>
                       

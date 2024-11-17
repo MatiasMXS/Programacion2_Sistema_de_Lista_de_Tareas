@@ -41,6 +41,20 @@ const findByNombre = async (req, res) => {
   }
 };
 
+const findByEtiqueta = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM tareas INNER JOIN tareas_etiquetas on tareas.id=tarea_id WHERE etiqueta_id=? and usuario_id=?;",
+      [id, idUsuariofun()]
+    );
+    res.status(200).send(rows);
+  } catch (error) {
+    res.status(500).send({ mensaje: "Error al obtener las etiquetas", error });
+  }
+};
+
 // Crear una nueva tarea
 const create = async (req, res) => {
   const { nombre, descripcion, fecha_Limite, prioridad, materia } =
@@ -184,6 +198,7 @@ export const tareasController = {
   findAll,
   findById,
   findByNombre,
+  findByEtiqueta,
   create,
   update,
   checkUpdate,

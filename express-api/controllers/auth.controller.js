@@ -58,6 +58,25 @@ export const login = async (req, res) => {
   }
 };
 
+export const actualizar = async (req, res) => {
+  const {nick,contraseña,id} = req.body;
+try{
+    const contraseñaHasheada = await bcrypt.hash(contraseña, 10);
+
+    const [result] = await pool.query(
+      "UPDATE usuario SET nick = ?, contraseña = ? WHERE uid= ?",
+      [nick, contraseñaHasheada, id]
+    );
+    if (result.affectedRows === 1) {
+      res.json({ message: "Registro de usuario actualizado" });
+    } else {
+      res.json({ message: "Registro de usuario inexistente" });
+    }
+  } catch (error) {
+    res.status(400).send({mensaje: "Error al actualizar la tarea",});
+  }
+};
+
 export function idUsuariofun (){
   return idUsuario;
 };

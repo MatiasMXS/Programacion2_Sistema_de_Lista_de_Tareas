@@ -114,13 +114,13 @@ const Create_tarea_etiqueta = async (req, res) => {
     }
 };
 const Delete_tarea_etiqueta = async (req, res) => {
-    const { id } = req.params;
+    const { tarea_id, etiqueta_id} = req.body;
     try {
-        const [result] = await pool.query("DELETE FROM tareas_etiquetas WHERE id = ?", [
-            id,
+        const [result] = await pool.query("DELETE FROM tareas_etiquetas WHERE tarea_id = ? and etiqueta_id = ?", [
+            tarea_id, etiqueta_id
           ]);
         if (result.affectedRows != 1) {
-            return res.status(404).send({ mensaje: 'relacion no encontrada' });
+            return res.status(404).send({ mensaje: 'relacion no encontrada aaa', tarea_id, etiqueta_id });
         }
         res.status(200).send({ mensaje: 'realacion eliminado correctamente' });
     } catch (error) {

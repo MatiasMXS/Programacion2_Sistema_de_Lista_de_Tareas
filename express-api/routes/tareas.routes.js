@@ -7,6 +7,7 @@ const router = Router();
 router.get('/', auth.verifyToken, tareasController.findAll);
 router.get('/:id', auth.verifyToken, tareasController.findById);
 router.get('/nombre/:nombre', auth.verifyToken, tareasController.findByNombre);
+router.get('/etiqueta/:id', auth.verifyToken, tareasController.findByEtiqueta);
 router.post('/', auth.verifyToken, tareasController.create);
 router.put('/:id', auth.verifyToken, tareasController.update);
 router.put('/check/:id', auth.verifyToken, tareasController.checkUpdate);
