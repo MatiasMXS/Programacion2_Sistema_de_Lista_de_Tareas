@@ -1,10 +1,10 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import "./Tareas.css";
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 
-const Tareas = ({
+const TareasPendientes = ({
   tareas,
   getTareas,
   etiquetasUsadas,
@@ -13,7 +13,7 @@ const Tareas = ({
   TareasFecha
 }) => {
   const [buscartareas, setbuscarTareas] = useState([]);
-  const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState([]);
+  const [showEtiquetas, setShowEtiquetas] = useState();
   const { token } = useContext(AuthContext);
   const [id, setId] = useState("");
   const [nombre, setNombre] = useState("");
@@ -24,7 +24,6 @@ const Tareas = ({
   const [usuario_id, setUsuario_id] = useState("");
   const [title, setTitle] = useState("");
   const [busqueda, setBusqueda] = useState("");
-  
 
   const openModal = (
     opcion,
@@ -33,27 +32,26 @@ const Tareas = ({
     descripcion,
     fecha_Limite,
     prioridad,
-    materia,
-    etiquetasSeleccionadas
+    materia
   ) => {
     if (opcion === 1) {
       setTitle("Añadir nueva tarea");
+      setShowEtiquetas(false);
       setId("");
       setNombre(busqueda);
       setDescripcion("");
       setfecha_Limite("");
       setPrioridad("");
       setMateria("");
-      setEtiquetasSeleccionadas([]);
     } else if (opcion === 2) {
       setTitle("Editar tarea");
+      setShowEtiquetas(true);
       setId(id);
       setNombre(nombre);
       setDescripcion(descripcion);
       setfecha_Limite(fecha_Limite);
       setPrioridad(prioridad);
       setMateria(materia);
-      setEtiquetasSeleccionadas([getEtiquetasUsadas]);
     }
     setTimeout(() => {
       document.getElementById("id").focus();
@@ -74,7 +72,6 @@ const Tareas = ({
         }),
       });
       const data = await response.json();
-      console.log(data);
 
       if (response.ok) {
         document.getElementById("btnCerrar").click();
@@ -110,7 +107,6 @@ const Tareas = ({
         }),
       });
       const data = await response.json();
-      console.log(data);
 
       if (response.ok) {
         alert(id ? "Tarea actualizado con éxito" : "Tarea añadida con éxito");
@@ -144,7 +140,6 @@ const Tareas = ({
 
   const handleBusqueda = (e) => {
     setBusqueda(e.target.value);
-    console.log(e.target.value);
     buscar(e.target.value);
   };
 
@@ -162,11 +157,11 @@ const Tareas = ({
       setbuscarTareas(data);
     } catch (error) {
       console.error(error);
-      setbuscarTareas([]); // Restablece a un arreglo vacío si hay errores
+      setbuscarTareas([]); 
     }
   };
 
-  const asociarEtiqueta = async (tarea_id,etiqueta_id) => {
+  const asociarEtiqueta = async (tarea_id, etiqueta_id) => {
     try {
       const response = await fetch("http://localhost:3000/etiquetas/C_Tarea", {
         method: "POST",
@@ -183,7 +178,7 @@ const Tareas = ({
       console.log(data);
 
       if (response.ok) {
-        alert("Etiqueta asociada con éxito");
+        //alert("Etiqueta asociada con éxito");
         document.getElementById("btnCerrar").click();
         getEtiquetasUsadas();
       }
@@ -192,32 +187,63 @@ const Tareas = ({
     }
   };
 
-  const handleNuevaEtiqueta = (etiquetaId,id) => {
-    console.log("hola", etiquetaId,id);
-    const etiquetasTarea = obtenerEtiquetasTarea(id);
+  const DesasociarEtiqueta = async (tarea_id, etiqueta_id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/etiquetas/D_Tarea/a`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            tarea_id,
+            etiqueta_id,
+          }),
+        }
+      );
+      const data = await response.json();
 
-    // Revisamos si la etiqueta ya está asociada
-    const yaAsociada = etiquetasTarea.some((etiqueta) => etiqueta.id === etiquetaId);
-  
-    if (yaAsociada) {
-      console.log("Etiqueta ya está asociada:", etiquetaId);
-    } else {
-      console.log("Asociando etiqueta:", etiquetaId, "a tarea:", id);
-      asociarEtiqueta(id, etiquetaId);
-      
+      if (response.ok) {
+        // alert("Etiqueta eliminada con éxito");
+        document.getElementById("btnCerrar").click();
+        getEtiquetasUsadas();
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const obtenerEtiquetasTarea = (tareaId) => {
-    console.log(etiquetasUsadas.filter((etiqueta) => etiqueta.tarea_id === tareaId));
-    return etiquetasUsadas.filter((etiqueta) => etiqueta.tarea_id === tareaId);
+    const etiquetasdetareaespecifica = etiquetasUsadas.filter(
+      (etiqueta) => etiqueta.tarea_id === tareaId
+    );
+    return etiquetasdetareaespecifica;
   };
 
+  const handleNuevaEtiqueta = (etiqueta_Id, id, checked) => {
+    if (checked) {
+      console.log("Etiqueta ya está asociada:", etiqueta_Id, id);
+      DesasociarEtiqueta(id, etiqueta_Id);
+    } else {
+      console.log("Asociando etiqueta:", etiqueta_Id, "a tarea:", id);
+      asociarEtiqueta(id, etiqueta_Id);
+    }
+  };
 
+  const formatFecha = (fechaISO) => {
+    const fecha = new Date(fechaISO);
+    const dia = fecha.getDate().toString().padStart(2, "0");
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+    const año = fecha.getFullYear(); 
+    return `${dia}-${mes}-${año}`;
+  };
+  
 
   return (
     <div className="container mt-4">
-      <h3>Lista de Tareas Pendientes</h3>
+      <h3>Lista de Tareas</h3>
 
       <div className="input-group">
         <input
@@ -302,6 +328,7 @@ const Tareas = ({
                 />
               </div>
 
+              {showEtiquetas && (
               <div className="dropdown justify-content-start align-items-right">
                 <button
                   className="form-control dropdown-toggle"
@@ -318,24 +345,35 @@ const Tareas = ({
                         <input
                           type="checkbox"
                           className="form-check-input me-2"
-                          checked={obtenerEtiquetasTarea(id).some(etiqueta => etiqueta.id === row.id)}
-                          onChange={() => handleNuevaEtiqueta(row.id,id)}
+                          checked={etiquetasUsadas   //del array etiquetas usadas total, filtramos las que tengan tarea_id igual al id de la tarea elegida
+                            .filter((item) => item.tarea_id === id)    //some devuelve true si encuentra etiquetda_id exactamente igual a row.id actual (DE ETIQEUTAS USADAS)
+                            .some((etiqueta) => etiqueta.etiqueta_id === row.id )}
+                          onChange={() =>
+                            handleNuevaEtiqueta(
+                              row.id,
+                              id,
+                              etiquetasUsadas
+                                .filter((item) => item.tarea_id === id)
+                                .some((etiqueta) => etiqueta.etiqueta_id === row.id)
+                            )
+                          }
                         />
                         {row.nombre}
                       </label>
                       <span
                         className="rounded-circle float-end"
-                        style={{             backgroundColor: row.color,
-                          width: '16px',
-                          height: '16px',
-                          display: 'inline-block',
-                         }}
-                        
-                      > </span>
+                        style={{
+                          backgroundColor: row.color,
+                          width: "16px",
+                          height: "16px",
+                          display: "inline-block",
+                        }}
+                      ></span>
                     </li>
                   ))}
                 </ul>
               </div>
+            )}
             </div>
 
             <div className="modal-footer justify-content-center align-items-center">
@@ -362,8 +400,8 @@ const Tareas = ({
       <br />
 
       <div className="accordion accordion-flush" id="accordionFlushExample">
-        {(busqueda ? buscartareas : TareasFecha).length > 0 ? (
-          (busqueda ? buscartareas : TareasFecha).map((row) => (
+        {(busqueda ? buscartareas : tareas).length > 0 ? (
+          (busqueda ? buscartareas : tareas).map((row) => (
             <div className="accordion-item" id="" key={row.id}>
               <h2
                 className={`accordion-header d-flex align-items-center justify-content-between checkbox-${row.estado}`}
@@ -408,7 +446,7 @@ const Tareas = ({
               >
                 <div className="accordion-body">
                   Descripción: {row.descripcion} <br />
-                  Fecha Límite: {row.fecha_Limite}
+                  Fecha Límite: {formatFecha(row.fecha_Limite)}
                   <br />
                   Prioridad: {row.prioridad}
                   <br />
@@ -461,4 +499,4 @@ const Tareas = ({
     </div>
   );
 };
-export default Tareas;
+export default TareasPendientes;

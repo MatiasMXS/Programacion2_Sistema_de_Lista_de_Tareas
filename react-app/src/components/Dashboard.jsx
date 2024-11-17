@@ -121,6 +121,7 @@ const data = await response.json();
       getEtiquetasUsadas={getEtiquetasUsadas}
       etiquetas={etiquetas}
       tareasEtiquetas={tareasEtiquetas}
+      
     />
     )}
     </div>

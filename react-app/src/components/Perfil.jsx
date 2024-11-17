@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+
 import { AuthContext } from "../context/AuthProvider";
 import { useContext, useState } from "react";
 import "./Login.css";

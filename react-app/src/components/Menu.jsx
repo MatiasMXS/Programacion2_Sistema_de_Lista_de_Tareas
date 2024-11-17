@@ -11,7 +11,8 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
   const [nombre, setNombre] = useState("");
   const [color, setColor] = useState("");
   const [usuario_id, setUsuario_id] = useState("");
-
+  const [nuevaet, setNuevaet] = useState("");
+  const [busqueda, setBusqueda] = useState("");
 
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate(); // Para redireccionar
@@ -37,7 +38,7 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
       console.log(data);
 
       if (response.ok) {
-        alert("Etiqueta añadida con éxito");
+        console.log("Etiqueta añadida con éxito");
         document.getElementById("btnCerrar").click();
         getEtiquetas();
       }
@@ -140,10 +141,12 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
     }
   };
 
-  const handlecrear=e=>{
-    console.log(e.target.value);
+  const handlecrear=(e)=>{
+    setBusqueda(e.target.value);
     setNombre(e.target.value);
    }
+
+
 
    const handleColor = (e, id) => {
     console.log(e.target.value);
@@ -198,35 +201,7 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
                   <button className="nav-link" onClick={() => cambiarPagina("perfil")}>Perfil</button>
                   
                 </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Calendario
-                  </a>
-                </li>
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Materias
-                  </a>
-
-                  <ul className="dropdown-menu">
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        Programación
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        APS
-                      </a>
-                    </li>
-                  </ul>
-                </li>
+              
 
                 <li className="nav-item dropdown">
                   <a
@@ -296,12 +271,15 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
                         aria-label="Nueva etiqueta"
                         aria-describedby="button-addon2"
                         onChange={handlecrear}
+                        value={busqueda}
+                       
                       ></input>
                       <button
                         className="btn btn-success"
                         type="button"
                         id="button-addon2"
                         onClick={sendDataEtiqueta}
+                        disabled={!busqueda.trim()}
                       >
                         +
                       </button>
