@@ -10,7 +10,9 @@ const TareasEtiquetas = ({
   etiquetasUsadas,
   getEtiquetasUsadas,
   etiquetas,
-  tareasEtiquetas
+  tareasEtiquetas,
+  getbuscarTareaEtiqueta,
+  Num,
 }) => {
   const [buscartareas, setbuscarTareas] = useState([]);
   const [showEtiquetas, setShowEtiquetas] = useState();
@@ -75,7 +77,7 @@ const TareasEtiquetas = ({
 
       if (response.ok) {
         document.getElementById("btnCerrar").click();
-        getTareas();
+        getbuscarTareaEtiqueta(2);
       }
     } catch (error) {
       console.log(error);
@@ -111,7 +113,7 @@ const TareasEtiquetas = ({
       if (response.ok) {
         alert(id ? "Tarea actualizado con éxito" : "Tarea añadida con éxito");
         document.getElementById("btnCerrar").click();
-        getTareas();
+        getbuscarTareaEtiqueta(2);
       }
     } catch (error) {
       console.log(error);
@@ -131,7 +133,7 @@ const TareasEtiquetas = ({
       });
 
       if (response.ok) {
-        getTareas();
+        getbuscarTareaEtiqueta(2);
       }
     } catch (error) {
       console.log(error);

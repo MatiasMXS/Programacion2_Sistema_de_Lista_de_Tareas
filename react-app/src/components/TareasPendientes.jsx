@@ -10,7 +10,9 @@ const TareasPendientes = ({
   etiquetasUsadas,
   getEtiquetasUsadas,
   etiquetas,
-  TareasFecha
+  TareasFecha,
+  getbuscarTareaFecha,
+  Num
 }) => {
   const [buscartareas, setbuscarTareas] = useState([]);
   const [showEtiquetas, setShowEtiquetas] = useState();
@@ -75,7 +77,7 @@ const TareasPendientes = ({
 
       if (response.ok) {
         document.getElementById("btnCerrar").click();
-        getTareas();
+        getbuscarTareaFecha(Num);
       }
     } catch (error) {
       console.log(error);
@@ -111,7 +113,7 @@ const TareasPendientes = ({
       if (response.ok) {
         alert(id ? "Tarea actualizado con éxito" : "Tarea añadida con éxito");
         document.getElementById("btnCerrar").click();
-        getTareas();
+        getbuscarTareaFecha(Num);
       }
     } catch (error) {
       console.log(error);
@@ -131,7 +133,7 @@ const TareasPendientes = ({
       });
 
       if (response.ok) {
-        getTareas();
+        getbuscarTareaFecha(Num);
       }
     } catch (error) {
       console.log(error);
@@ -400,8 +402,8 @@ const TareasPendientes = ({
       <br />
 
       <div className="accordion accordion-flush" id="accordionFlushExample">
-        {(busqueda ? buscartareas : tareas).length > 0 ? (
-          (busqueda ? buscartareas : tareas).map((row) => (
+        {(busqueda ? buscartareas : TareasFecha).length > 0 ? (
+          (busqueda ? buscartareas : TareasFecha).map((row) => (
             <div className="accordion-item" id="" key={row.id}>
               <h2
                 className={`accordion-header d-flex align-items-center justify-content-between checkbox-${row.estado}`}

@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthProvider";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTareasEtiquetas }) => {
+const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, getbuscarTareaFecha, getbuscarTareaEtiqueta, setNum }) => {
   const { token } = useContext(AuthContext);
   const [id, setId] = useState("");
   const [nombre, setNombre] = useState("");
@@ -93,53 +93,6 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
     navigate("/");
   };
 
-  const buscarFecha = async (dia) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/tareas/proximas-vencer/${dia}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) throw new Error("Error al buscar tareas");
-      const data = await response.json();
-      setTareasFecha(data);
-      // setTareasFecha
-      // Pendientes =buscartareasFecha;
-    } catch (error) {
-      console.error(error);
-      setTareasFecha([]); // Restablece a un arreglo vacío si hay errores
-    }
-  };
-
-  const buscarTareaEtiqueta = async (id) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/tareas/etiqueta/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) throw new Error("Error al buscar tareas");
-      const data = await response.json();
-      seTareasEtiquetas(data);
-      // setTareasFecha
-      // Pendientes =buscartareasFecha;
-    } catch (error) {
-      console.error(error);
-      seTareasEtiquetas([]); // Restablece a un arreglo vacío si hay errores
-    }
-  };
 
   const handlecrear=(e)=>{
     setBusqueda(e.target.value);
@@ -220,7 +173,8 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
                         className="dropdown-item"
                         onClick={() => {
                           cambiarPagina("tareasPendientes");
-                          buscarFecha(1);
+                          setNum(1);
+                          getbuscarTareaFecha(1);
                         }}
                       >
                         Hoy
@@ -231,7 +185,8 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
                         className="dropdown-item"
                         onClick={() => {
                           cambiarPagina("tareasPendientes");
-                          buscarFecha(2);
+                          setNum(2);
+                          getbuscarTareaFecha(2);
                         }}
                       >
                         Mañana
@@ -242,7 +197,8 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
                         className="dropdown-item"
                         onClick={() => {
                           cambiarPagina("tareasPendientes");
-                          buscarFecha(7);
+                          setNum(7);
+                          getbuscarTareaFecha(7);
                         }}
                       >
                         Próxima Semana
@@ -293,7 +249,8 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
                           className="dropdown-item d-flex align-items-center"
                           onClick={() => {
                             cambiarPagina("tareasEtiquetas");
-                            buscarTareaEtiqueta(row.id);
+                            setNum(row.id);
+                            getbuscarTareaEtiqueta(row.id);
                           }}
                         >
                           {row.nombre}
@@ -337,3 +294,5 @@ const Menu = ({ etiquetas , getEtiquetas, cambiarPagina, setTareasFecha, seTarea
   );
 };
 export default Menu;
+
+

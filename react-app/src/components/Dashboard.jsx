@@ -22,6 +22,7 @@ const [etiquetasUsadas, setEtiquetasUsadas] = useState([]);
 const [paginaActual, setPaginaActual] = useState("tareas");
 const [TareasFecha, setTareasFecha] = useState([]);
 const [tareasEtiquetas, seTareasEtiquetas] = useState([]);
+const [Num, setNum] = useState([]);
 
 
   const contentRef = useRef(null);
@@ -63,15 +64,59 @@ const data = await response.json();
     });
    const data = await response.json();
      setEtiquetasUsadas(data);
-     console.log(etiquetasUsadas);
      
-     
+    };
+
+    const getbuscarTareaFecha = async (dia) => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/tareas/proximas-vencer/${dia}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if (!response.ok) throw new Error("Error al buscar tareas");
+        const data = await response.json();
+        setTareasFecha(data);
+      } catch (error) {
+        console.error(error);
+        setTareasFecha([]); 
+      }
+    };
+  
+    const getbuscarTareaEtiqueta = async (id) => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/tareas/etiqueta/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if (!response.ok) throw new Error("Error al buscar tareas");
+        const data = await response.json();
+        seTareasEtiquetas(data);
+      } catch (error) {
+        console.error(error);
+        seTareasEtiquetas([]); 
+      }
     };
   
   useEffect(() => {
     getTareas();
     getEtiquetas();
-      getEtiquetasUsadas()
+      getEtiquetasUsadas();
+      getbuscarTareaFecha(1)
+      getbuscarTareaEtiqueta(2);
     
   }, []);
 
@@ -87,6 +132,9 @@ const data = await response.json();
     cambiarPagina={cambiarPagina}
     setTareasFecha={setTareasFecha}
     seTareasEtiquetas={seTareasEtiquetas}
+    getbuscarTareaFecha={getbuscarTareaFecha}
+    getbuscarTareaEtiqueta={getbuscarTareaEtiqueta}
+    setNum={setNum}
     />
     
     <br></br>
@@ -110,6 +158,8 @@ const data = await response.json();
       getEtiquetasUsadas={getEtiquetasUsadas}
       etiquetas={etiquetas}
       TareasFecha={TareasFecha}
+      getbuscarTareaFecha={getbuscarTareaFecha}
+      Num={Num}
 
     />
     )}
@@ -120,7 +170,9 @@ const data = await response.json();
       etiquetasUsadas={etiquetasUsadas}
       getEtiquetasUsadas={getEtiquetasUsadas}
       etiquetas={etiquetas}
+      getbuscarTareaEtiqueta={getbuscarTareaEtiqueta}
       tareasEtiquetas={tareasEtiquetas}
+      Num={Num}
       
     />
     )}
