@@ -159,8 +159,8 @@ const end = async (req, res) => {
 
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM tareas WHERE fecha_Limite BETWEEN ? AND ?",
-      [fechaactual, fechafinal]
+      "SELECT * FROM tareas WHERE usuario_id =? AND fecha_Limite BETWEEN ? AND ?",
+      [idUsuariofun(),fechaactual, fechafinal]
     );
     if (rows.length > 0) {
       res.json(rows);
