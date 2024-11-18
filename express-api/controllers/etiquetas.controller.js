@@ -88,17 +88,24 @@ const update = async (req, res) => {
 // Eliminar una etiquetas por ID
 const remove = async (req, res) => {
     const { id } = req.params;
-    try {
-        const [result] = await pool.query("DELETE FROM etiquetas WHERE id = ?", [
-            id,
-          ]);
-        if (result.affectedRows != 1) {
-            return res.status(404).send({ mensaje: 'etiquetas no encontrada' });
-        }
-        res.status(200).send({ mensaje: 'etiquetas eliminado correctamente' });
-    } catch (error) {
-        res.status(500).send({ mensaje: 'Error al eliminar la etiquetas', error });
+
+    const [rows] = await pool.query(
+      "SELECT * FROM tareas_etiquetas WHERE etiqueta_id = ?",
+      [id]
+    );
+    if (rows.affectedRows != 0) {
+    await pool.query("DELETE FROM tareas_etiquetas WHERE etiqueta_id = ?", [id]);
+};
+  try {
+    const [result] = await pool.query("DELETE FROM etiquetas WHERE id = ?", [id]);
+    if (result.affectedRows != 1) {
+      return res.status(404).send({ mensaje: "etiquetas no encontrada" });
     }
+    res.status(200).send({ mensaje: "etiquetas eliminado correctamente" });
+  } catch (error) {
+    res.status(500).send({ mensaje: "Error al eliminar la etiquetas", error });
+  }
+     
 };
 
 const Create_tarea_etiqueta = async (req, res) => {
