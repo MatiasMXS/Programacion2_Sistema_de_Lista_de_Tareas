@@ -16,7 +16,7 @@ export const register = async (req, res) => {
   try {
     const usuario = await findByUsername(nick);
     if (usuario) {
-      return res.json({ message: "Usuario ya existe" });
+      return res.status(409).json({ message: "El usuario ya existe" });
     }
 
     const contraseñaHasheada = await bcrypt.hash(contraseña, 10);
@@ -25,9 +25,9 @@ export const register = async (req, res) => {
       "INSERT INTO usuario (nick, contraseña) VALUES (?, ?)",
       [nick, contraseñaHasheada]
     );
-    res.json({ message: "Usuario registrado exitosamente" });
+    res.status(201).json({ message: "Usuario registrado exitosamente" });
   } catch (error) {
-    res.json(error.message);
+    res.status(500).json(error.message);
   }
 };
 
