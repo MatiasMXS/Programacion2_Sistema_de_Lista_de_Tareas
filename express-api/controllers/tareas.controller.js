@@ -46,7 +46,7 @@ const findByEtiqueta = async (req, res) => {
 
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM tareas INNER JOIN tareas_etiquetas on tareas.id=tarea_id WHERE etiqueta_id=? and usuario_id=?;",
+      "SELECT tareas.id, tareas.nombre, tareas.descripcion, tareas.fecha_Limite, tareas.prioridad, tareas.estado, tareas.materia, tareas.usuario_id FROM tareas INNER JOIN tareas_etiquetas on tareas.id=tarea_id WHERE etiqueta_id=? and usuario_id=?;",
       [id, idUsuariofun()]
     );
     res.status(200).send(rows);
