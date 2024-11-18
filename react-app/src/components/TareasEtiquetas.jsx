@@ -77,7 +77,7 @@ const TareasEtiquetas = ({
 
       if (response.ok) {
         document.getElementById("btnCerrar").click();
-        getbuscarTareaEtiqueta(2);
+        getbuscarTareaEtiqueta(Num);
       }
     } catch (error) {
       console.log(error);
@@ -113,7 +113,7 @@ const TareasEtiquetas = ({
       if (response.ok) {
         alert(id ? "Tarea actualizado con éxito" : "Tarea añadida con éxito");
         document.getElementById("btnCerrar").click();
-        getbuscarTareaEtiqueta(2);
+        getbuscarTareaEtiqueta(Num);
       }
     } catch (error) {
       console.log(error);
@@ -133,7 +133,7 @@ const TareasEtiquetas = ({
       });
 
       if (response.ok) {
-        getbuscarTareaEtiqueta(2);
+        getbuscarTareaEtiqueta(Num);
       }
     } catch (error) {
       console.log(error);
